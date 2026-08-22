@@ -10,19 +10,22 @@ import About from "./pages/About";
 
 export default function App() {
   const [page, setPage] = useState("home");
+
   const [user, setUser] = useState(() => {
-  try {
-    const savedUser = localStorage.getItem("docpilot_user");
-    return savedUser ? JSON.parse(savedUser) : null;
-  } catch {
-    return null;
-  }
-});
+    try {
+      const savedUser = localStorage.getItem("docpilot_user");
+      return savedUser ? JSON.parse(savedUser) : null;
+    } catch {
+      return null;
+    }
+  });
+
   const [authOpen, setAuthOpen] = useState(false);
   const [history, setHistory] = useState([]);
   const [homeKey, setHomeKey] = useState(0);
 
-  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+  const API_URL =
+    import.meta.env.VITE_API_URL || "http://localhost:5000";
 
   const loadHistory = async (account = user) => {
     if (!account?.id) {
@@ -31,11 +34,16 @@ export default function App() {
     }
 
     try {
-      const response = await fetch(`${API_URL}/api/history/${account.id}`);
+      const response = await fetch(
+        `${API_URL}/api/history/${account.id}`
+      );
+
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Unable to load history.");
+        throw new Error(
+          data.message || "Unable to load history."
+        );
       }
 
       setHistory(data.history || []);
@@ -44,6 +52,7 @@ export default function App() {
     }
   };
 
+  // Custom navigation events
   useEffect(() => {
     const openHistory = () => setPage("history");
     const openHow = () => setPage("how");
@@ -56,27 +65,38 @@ export default function App() {
       window.removeEventListener("open-how", openHow);
     };
   }, []);
+
+  // Load history whenever the user changes
+  // OR whenever the History page is opened
   useEffect(() => {
     if (user) {
       loadHistory(user);
     } else {
       setHistory([]);
     }
-  }, [user]);
+  }, [user, page]);
 
+  // Login / Signup
   const login = (account) => {
-  localStorage.setItem("docpilot_user", JSON.stringify(account));
-  setUser(account);
-  setPage("home");
-};
+    localStorage.setItem(
+      "docpilot_user",
+      JSON.stringify(account)
+    );
 
+    setUser(account);
+    setPage("home");
+  };
+
+  // Logout
   const logout = () => {
-  localStorage.removeItem("docpilot_user");
-  setUser(null);
-  setHistory([]);
-  setPage("home");
-};
+    localStorage.removeItem("docpilot_user");
 
+    setUser(null);
+    setHistory([]);
+    setPage("home");
+  };
+
+  // Go Home
   const goHome = () => {
     setHomeKey((key) => key + 1);
     setPage("home");
@@ -87,19 +107,27 @@ export default function App() {
     });
   };
 
+  // Delete history item
   const deleteHistory = async (id) => {
     try {
-      const response = await fetch(`${API_URL}/api/history/${id}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `${API_URL}/api/history/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Unable to delete history item.");
+        throw new Error(
+          data.message || "Unable to delete history item."
+        );
       }
 
-      setHistory((items) => items.filter((item) => item.id !== id));
+      setHistory((items) =>
+        items.filter((item) => item.id !== id)
+      );
     } catch (error) {
       console.error("History delete error:", error);
       alert("Unable to delete this history item.");
@@ -117,11 +145,17 @@ export default function App() {
         onProfile={() => setPage("profile")}
         onHowItWorks={() => {
           setPage("how");
-          window.scrollTo({ top: 0, behavior: "smooth" });
+          window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+          });
         }}
         onAbout={() => {
           setPage("about");
-          window.scrollTo({ top: 0, behavior: "smooth" });
+          window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+          });
         }}
         onLogout={logout}
       />
@@ -136,10 +170,14 @@ export default function App() {
       )}
 
       {page === "history" && (
-        <History history={history} onDelete={deleteHistory} />
+        <History
+          history={history}
+          onDelete={deleteHistory}
+        />
       )}
 
       {page === "how" && <HowItWorks />}
+
       {page === "about" && <About />}
 
       {page === "profile" && user && (
@@ -155,23 +193,39 @@ export default function App() {
         onHome={goHome}
         onHowItWorks={() => {
           setPage("how");
-          window.scrollTo({ top: 0, behavior: "smooth" });
+          window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+          });
         }}
         onAbout={() => {
           setPage("about");
-          window.scrollTo({ top: 0, behavior: "smooth" });
+          window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+          });
         }}
         onHistory={() => {
           setPage("history");
-          window.scrollTo({ top: 0, behavior: "smooth" });
+          window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+          });
         }}
         onProfile={() => {
           setPage("profile");
-          window.scrollTo({ top: 0, behavior: "smooth" });
+          window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+          });
         }}
       />
+
       {authOpen && (
-        <AuthModal onClose={() => setAuthOpen(false)} onLogin={login} />
+        <AuthModal
+          onClose={() => setAuthOpen(false)}
+          onLogin={login}
+        />
       )}
     </div>
   );
