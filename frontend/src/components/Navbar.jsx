@@ -1,0 +1,150 @@
+import React, { useState } from "react";
+
+export default function Navbar({
+  user,
+  currentPage,
+  onLogin,
+  onHistory,
+  onHome,
+  onProfile,
+  onHowItWorks,
+  onAbout,
+  onLogout,
+}) {
+  const [profileOpen, setProfileOpen] = useState(false);
+
+  const userName = user?.name || "User";
+  const userEmail = user?.email || "";
+
+  const initial = userName.charAt(0).toUpperCase();
+
+  return (
+    <header className="header">
+      {/* BRAND */}
+      <button className="brand" onClick={onHome}>
+        <span className="brand-mark">▤</span>
+
+        <span>
+          Document <b>Summary Assistant</b>
+        </span>
+      </button>
+
+      <nav>
+        {/* HOME */}
+        <button
+          className={currentPage === "home" ? "nav-link active" : "nav-link"}
+          onClick={onHome}
+        >
+          ⌂ <span>Home</span>
+        </button>
+
+        {/* HOW IT WORKS */}
+        <button
+          className={currentPage === "how" ? "nav-link active" : "nav-link"}
+          onClick={onHowItWorks}
+        >
+          ⓘ <span>How It Works</span>
+        </button>
+        {/* ABOUT */}
+        <button
+          className={currentPage === "about" ? "nav-link active" : "nav-link"}
+          onClick={onAbout}
+        >
+          ♙ <span>About</span>
+        </button>
+
+        {/* LOGGED IN */}
+        {user ? (
+          <>
+            {/* HISTORY */}
+            <button
+              className={
+                currentPage === "history" ? "nav-link active" : "nav-link"
+              }
+              onClick={onHistory}
+            >
+              ▣ <span>History</span>
+            </button>
+
+            {/* PROFILE */}
+            <div
+              className="profile-menu"
+              onMouseEnter={() => setProfileOpen(true)}
+              onMouseLeave={() => setProfileOpen(false)}
+            >
+              <button
+                className={
+                  currentPage === "profile"
+                    ? "profile-trigger profile-active"
+                    : "profile-trigger"
+                }
+                onClick={() => setProfileOpen(!profileOpen)}
+              >
+                <span className="profile-avatar-small">{initial}</span>
+
+                <span className="profile-name">{userName}</span>
+
+                <span className="profile-arrow">▾</span>
+              </button>
+
+              {profileOpen && (
+                <div className="profile-dropdown">
+                  <div className="dropdown-user">
+                    <div className="dropdown-avatar">{initial}</div>
+
+                    <div>
+                      <strong>{userName}</strong>
+
+                      <span>{userEmail}</span>
+                    </div>
+                  </div>
+
+                  <div className="dropdown-divider" />
+
+                  <button
+                    className="dropdown-item"
+                    onClick={() => {
+                      setProfileOpen(false);
+                      onProfile();
+                    }}
+                  >
+                    <span>♙</span>
+                    <span>View Profile</span>
+                  </button>
+
+                  <button
+                    className="dropdown-item"
+                    onClick={() => {
+                      setProfileOpen(false);
+                      onHistory();
+                    }}
+                  >
+                    <span>▣</span>
+                    <span>My History</span>
+                  </button>
+
+                  <div className="dropdown-divider" />
+
+                  <button
+                    className="dropdown-item logout-item"
+                    onClick={() => {
+                      setProfileOpen(false);
+                      onLogout();
+                    }}
+                  >
+                    <span>↪</span>
+                    <span>Logout</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          </>
+        ) : (
+          <button className="login-button" onClick={onLogin}>
+            Login
+          </button>
+        )}
+      </nav>
+    </header>
+  );
+}
