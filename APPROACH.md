@@ -1,9 +1,46 @@
-# 200-Word Approach
+## Approach
 
-The project is organized as a modular full-stack application so new features can be added without placing all UI logic inside one component. React pages handle major screens while reusable components handle navigation, upload, previews, authentication dialogs, confirmation dialogs, icons, and feature sections. A shared stylesheet keeps the same navy, gold, typography, spacing, and modal design across the application.
+1. **User Authentication**
 
-The backend remains responsible for document processing. Uploaded PDFs are processed with a compatibility-fixed PDF parser, while images are passed through Tesseract.js OCR. Extracted text is sent to Gemini through a server-side environment variable so the API key is not exposed in the browser.
+   * Users create an account using their name, email, and password.
+   * Email verification is handled through a one-time OTP.
+   * After successful verification/login, the user account is maintained on the application.
 
-The user flow is separated into clear states: landing/upload, processing/result, authentication, and history. An eye action is provided for viewing the currently uploaded file, and history rows have individual delete controls with a centered confirmation modal.
+2. **Document Upload**
 
-The current version deliberately separates the UI architecture from permanent authentication and storage. The next backend stage can add a database for users and history, an email provider for OTP delivery, secure password hashing, sessions/JWT, and persistent document storage without requiring the frontend to be rewritten. This approach keeps the code clean, testable, and easier to explain during an assessment.
+   * Users can upload **PDF, PNG, JPG, and JPEG** files up to **10 MB**.
+   * The frontend sends the selected document and summary-length preference to the Node.js backend using Axios.
+
+3. **Document Processing**
+
+   * The backend receives the file using **Multer**.
+   * PDF and image content is extracted using the appropriate processing/OCR method.
+   * The extracted text is then passed to the AI summarization layer.
+
+4. **AI Summarization**
+
+   * The application uses **Gemini API** to generate summaries.
+   * Users can choose **Short, Medium, or Long** summaries.
+   * The AI returns a structured summary along with important **key points**. 
+
+5. **History Management**
+
+   * Logged-in users can save generated summaries to their personal history.
+   * Saved documents are stored in **MongoDB** and associated with the user's ID.
+   * History can be retrieved, viewed, and deleted through backend APIs. 
+
+6. **PDF Export**
+
+   * Generated summaries and key points can be formatted into a professional PDF using **jsPDF**.
+   * Users can open/download their generated summary.
+
+7. **Frontend Architecture**
+
+   * The application is built with **React** using reusable components such as Navbar, UploadZone, AuthModal, History, Profile, and FilePreviewModal.
+   * Axios is used for communication between frontend and backend.
+
+8. **Backend & Database**
+
+   * **Node.js + Express.js** provide REST APIs.
+   * **MongoDB + Mongoose** store users and document history.
+   * The backend is deployed on **Render**, while the frontend is deployed on **Vercel**.
