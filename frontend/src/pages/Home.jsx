@@ -259,6 +259,42 @@ export default function Home({ user, onLogin, onHistorySaved }) {
     window.open(pdfUrl, "_blank");
   };
 
+
+  const saveToHistory = async () => {
+  if (!user?.id) {
+    onLogin();
+    return;
+  }
+
+  if (!result) return;
+
+  try {
+    const response = await axios.post(`${API_URL}/api/history`, {
+      userId: user.id,
+      fileName: result.fileName || file?.name || "Document",
+      fileType: file?.type || "application/pdf",
+      length: length,
+      summary: result.summary,
+      keyPoints: result.keyPoints || [],
+      method: result.method || "unknown",
+    });
+
+    if (response.data) {
+      if (onHistorySaved) {
+        await onHistorySaved();
+      }
+
+      window.dispatchEvent(new CustomEvent("open-history"));
+    }
+  } catch (err) {
+    console.error("Save history error:", err);
+
+    setError(
+      err.response?.data?.message ||
+        "Unable to save document history."
+    );
+  }
+};
   const goToHowItWorks = () => {
     window.dispatchEvent(new CustomEvent("open-how"));
   };
@@ -862,17 +898,9 @@ export default function Home({ user, onLogin, onHistorySaved }) {
               <div className="result-actions">
                 <button onClick={() => setPreview(true)}>◉ View File</button>
 
-                <button
-                  onClick={() => {
-                    window.dispatchEvent(new CustomEvent("open-history"));
-
-                    if (onHistorySaved) {
-                      onHistorySaved();
-                    }
-                  }}
-                >
-                  Save to History
-                </button>
+               <button onClick={saveToHistory}>
+  Save to History
+</button>
               </div>
             </div>
           </div>
