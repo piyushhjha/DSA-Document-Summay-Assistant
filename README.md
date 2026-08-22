@@ -152,3 +152,50 @@ If the primary AI provider is unavailable or reaches its limit, the system can m
                               │          │
                               ▼          ▼
                            Summary   OpenRouter
+
+
+
+                         ┌───────────────┐
+                         │     USER      │
+                         └───────┬───────┘
+                                 │
+                                 ▼
+                    ┌──────────────────────┐
+                    │      VERCEL          │
+                    │   React + Vite       │
+                    │      Frontend        │
+                    └──────────┬───────────┘
+                               │
+                               │ HTTPS
+                               ▼
+                    ┌──────────────────────┐
+                    │       RENDER         │
+                    │   Node + Express     │
+                    │       Backend        │
+                    └───────┬──────┬───────┘
+                            │      │
+                 ┌──────────┘      └────────────┐
+                 ▼                              ▼
+        ┌─────────────────┐             ┌──────────────┐
+        │     MongoDB     │             │ Extraction   │
+        │  Users/History  │             │     + OCR    │
+        └─────────────────┘             └──────┬───────┘
+                                               │
+                                               ▼
+                                      ┌─────────────────┐
+                                      │   AI Pipeline   │
+                                      │                 │
+                                      │ Gemini          │
+                                      │    ↓            │
+                                      │ Groq            │
+                                      │    ↓            │
+                                      │ OpenRouter      │
+                                      └─────────────────┘
+
+                         OTP Authentication
+                                │
+                                ▼
+                         ┌──────────────┐
+                         │    Brevo     │
+                         │ Email API    │
+                         └──────────────┘
