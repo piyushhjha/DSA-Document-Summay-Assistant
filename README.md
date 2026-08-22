@@ -152,5 +152,12 @@ If the primary AI provider is unavailable or reaches its limit, the system can m
                               │          │
                               ▼          ▼
                            Summary   OpenRouter
+```
+---
 
+<div align="left">
+
+**© 2026 📄 DocPilot· Made by Piyush Ranjan Jha **
+
+</div>
 
