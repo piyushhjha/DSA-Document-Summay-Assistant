@@ -10,7 +10,14 @@ import About from "./pages/About";
 
 export default function App() {
   const [page, setPage] = useState("home");
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+  try {
+    const savedUser = localStorage.getItem("docpilot_user");
+    return savedUser ? JSON.parse(savedUser) : null;
+  } catch {
+    return null;
+  }
+});
   const [authOpen, setAuthOpen] = useState(false);
   const [history, setHistory] = useState([]);
   const [homeKey, setHomeKey] = useState(0);
@@ -58,14 +65,17 @@ export default function App() {
   }, [user]);
 
   const login = (account) => {
-    setUser(account);
-    setPage("home");
-  };
+  localStorage.setItem("docpilot_user", JSON.stringify(account));
+  setUser(account);
+  setPage("home");
+};
 
   const logout = () => {
-    setUser(null);
-    setPage("home");
-  };
+  localStorage.removeItem("docpilot_user");
+  setUser(null);
+  setHistory([]);
+  setPage("home");
+};
 
   const goHome = () => {
     setHomeKey((key) => key + 1);
