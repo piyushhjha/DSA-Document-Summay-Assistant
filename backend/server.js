@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import cors from "cors";
 import multer from "multer";
 import dotenv from "dotenv";
-import nodemailer from "nodemailer";
+//import nodemailer from "nodemailer";
 import crypto from "crypto";
 
 import User from "./models/User.js";
@@ -33,14 +33,14 @@ const upload = multer({
 
 const otpStore = new Map();
 //const users = new Map();
-
-const mailTransporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
+// removing below because render deployment dont supoort SMTP gmail verification
+// const mailTransporter = nodemailer.createTransport({
+//   service: "gmail",
+//   auth: {
+//     user: process.env.EMAIL_USER,
+//     pass: process.env.EMAIL_PASS,
+//   },
+// }); 
 
 const hashPassword = (
   password,
@@ -130,19 +130,37 @@ app.post("/api/auth/send-otp", async (req, res) => {
       expiresAt: Date.now() + 10 * 60 * 1000,
     });
 
-    await mailTransporter.sendMail({
-      from: `"Document Summary Assistant" <${process.env.EMAIL_USER}>`,
-      to: normalizedEmail,
+    const brevoResponse = await fetch(
+  "https://api.brevo.com/v3/smtp/email",
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "api-key": process.env.BREVO_API_KEY,
+    },
+    body: JSON.stringify({
+      sender: {
+        name: "Document Summary Assistant",
+        email: process.env.EMAIL_USER,
+      },
+      to: [
+        {
+          email: normalizedEmail,
+        },
+      ],
       subject: "Your Document Summary Assistant OTP",
 
-      text: `Your verification OTP is ${otp}. ` + `It expires in 10 minutes.`,
+      textContent:
+        `Your verification OTP is ${otp}. ` +
+        `It expires in 10 minutes.`,
 
-      html: `
+      htmlContent: `
         <div style="
           font-family:Arial,sans-serif;
           max-width:600px;
           margin:auto;
-          padding:30px
+          padding:30px;
+          color:#17243a;
         ">
 
           <h2 style="color:#17243a">
@@ -177,7 +195,19 @@ app.post("/api/auth/send-otp", async (req, res) => {
 
         </div>
       `,
-    });
+    }),
+  },
+);
+
+if (!brevoResponse.ok) {
+  const brevoError = await brevoResponse.text();
+
+  console.error("Brevo OTP error:", brevoError);
+
+  return res.status(500).json({
+    message: "Unable to send OTP. Please try again.",
+  });
+}
 
     res.json({
       message: `OTP sent to ${normalizedEmail}. Check your inbox.`,
