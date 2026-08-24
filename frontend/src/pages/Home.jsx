@@ -209,7 +209,57 @@ export default function Home({ user, onLogin, onHistorySaved }) {
 
         y += 2;
       });
+
+      //NEW for multi language
+      if (
+          result.detectedLanguage &&
+          result.detectedLanguage.toLowerCase() !== "english" &&
+          result.englishSummary
+        ) {
+        doc.addPage();
+
+        doc.setFontSize(16);
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(245, 183, 44);
+        doc.text("English Summary", margin, y);
+
+      y += 12;
+
+      doc.setFontSize(11);
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(20, 40, 65);
+
+      const englishSummaryLines = doc.splitTextToSize(
+        result.englishSummary,
+        pageWidth - margin * 2
+      );
+
+    doc.text(englishSummaryLines, margin, y);
+
+      y += englishSummaryLines.length * 6 + 12;
+
+      doc.setFontSize(16);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(245, 183, 44);
+      doc.text("English Key Points", margin, y);
+
+      y += 10;
+
+      doc.setFontSize(11);
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(20, 40, 65);
+
+      result.englishKeyPoints.forEach((point) => {
+      const lines = doc.splitTextToSize(
+        `• ${point}`,
+        pageWidth - margin * 2
+      );
+
+      doc.text(lines, margin, y);
+      y += lines.length * 6 + 4;
+    });
     }
+  }
 
     // -------------------------------------------------
     // FOOTER ON EVERY PAGE
