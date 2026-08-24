@@ -63,6 +63,12 @@ It supports both text-based documents and scanned/image documents through OCR.
 - Medium summary
 - Long summary
 - Automatic key points
+- Automatic language detection
+- Multilingual document summarization
+- Original-language summary and key points
+- English translation for non-English documents
+- English summary and key points for non-English documents
+- English documents receive English output only
 - Multi-provider AI fallback
 
 </td>
@@ -121,7 +127,40 @@ It supports both text-based documents and scanned/image documents through OCR.
 </td>
 </tr>
 </table>
+---
 
+# 🌍 Multilingual Summarization
+
+DocPilot supports multilingual document summarization.
+
+The system automatically detects the language of the uploaded document and generates the summary and key points accordingly.
+
+### How it works
+
+```text
+                 Uploaded Document
+                         │
+                         ▼
+                  Text Extraction
+                     / OCR
+                         │
+                         ▼
+                 Language Detection
+                         │
+              ┌──────────┴──────────┐
+              │                     │
+          English               Other Language
+              │                     │
+              ▼                     ▼
+      English Summary       Original Language
+      English Key Points    Summary & Key Points
+                                    │
+                                    ▼
+                            English Summary
+                            English Key Points
+
+
+```
 ---
 
 # 🧠 AI Fallback Architecture
