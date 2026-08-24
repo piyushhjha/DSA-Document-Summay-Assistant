@@ -19,27 +19,36 @@
 
 4. **AI Summarization**
 
-   * The application uses **Gemini API** to generate summaries.
+   * The application uses **Gemini, Groq, and OpenRouter** as AI providers.
    * Users can choose **Short, Medium, or Long** summaries.
-   * The AI returns a structured summary along with important **key points**. 
+   * The AI returns a structured summary along with important **key points**.
+   * A fallback mechanism allows the application to use another AI provider if the primary provider fails.
 
-5. **History Management**
+5. **Multilingual Summarization**
+
+   * The AI automatically detects the language of the uploaded document.
+   * For **English documents**, the application provides only an English summary and English key points.
+   * For **non-English documents**, the application provides the summary and key points in the original language.
+   * An additional **English summary and English key points** are generated for non-English documents.
+
+6. **History Management**
 
    * Logged-in users can save generated summaries to their personal history.
    * Saved documents are stored in **MongoDB** and associated with the user's ID.
-   * History can be retrieved, viewed, and deleted through backend APIs. 
+   * History can be retrieved, viewed, and deleted through backend APIs.
 
-6. **PDF Export**
+7. **PDF Export**
 
    * Generated summaries and key points can be formatted into a professional PDF using **jsPDF**.
+   * For non-English documents, the downloaded PDF also includes the English summary and English key points.
    * Users can open/download their generated summary.
 
-7. **Frontend Architecture**
+8. **Frontend Architecture**
 
    * The application is built with **React** using reusable components such as Navbar, UploadZone, AuthModal, History, Profile, and FilePreviewModal.
    * Axios is used for communication between frontend and backend.
 
-8. **Backend & Database**
+9. **Backend & Database**
 
    * **Node.js + Express.js** provide REST APIs.
    * **MongoDB + Mongoose** store users and document history.
