@@ -543,6 +543,10 @@ app.post("/api/summarize", upload.single("file"), async (req, res) => {
 
       keyPoints: result.keyPoints,
 
+      detectedLanguage: result.detectedLanguage,
+      englishSummary: result.englishSummary,
+      englishKeyPoints: result.englishKeyPoints,
+
       extractedText: extracted.text,
     });
   } catch (error) {
