@@ -883,17 +883,43 @@ export default function Home({ user, onLogin, onHistorySaved }) {
 
               <p className="summary-text">{result.summary}</p>
 
-              {result.keyPoints && result.keyPoints.length > 0 && (
-                <div className="key-points">
-                  <h3>Key Points</h3>
+                    {result.keyPoints && result.keyPoints.length > 0 && (
+                    <div className="key-points">
+                    <h3>Key Points</h3>
+
+                      <ul>
+                          {result.keyPoints.map((point, index) => (
+                          <li key={index}>{point}</li>
+                          ))}
+                    </ul>
+                  </div>
+              )}
+
+            {result.detectedLanguage &&
+              result.detectedLanguage.toLowerCase() !== "english" &&
+              result.englishSummary && (
+            <div className="english-result-section">
+                <h3>English Summary</h3>
+
+                  <p className="summary-text">
+                    {result.englishSummary}
+                  </p>
+
+              {result.englishKeyPoints &&
+              result.englishKeyPoints.length > 0 && (
+              <div className="key-points">
+                  <h3>English Key Points</h3>
 
                   <ul>
-                    {result.keyPoints.map((point, index) => (
+                      {result.englishKeyPoints.map((point, index) => (
                       <li key={index}>{point}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+                      ))}
+                </ul>
+            </div>
+            )}
+      </div>
+      )}
+
 
               <div className="result-actions">
                 <button onClick={() => setPreview(true)}>◉ View File</button>
