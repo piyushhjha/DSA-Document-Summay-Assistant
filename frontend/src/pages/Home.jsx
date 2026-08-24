@@ -163,108 +163,160 @@ export default function Home({ user, onLogin, onHistorySaved }) {
 
     y += 7;
 
-    // -------------------------------------------------
-    // KEY POINTS
-    // -------------------------------------------------
+   // -------------------------------------------------
+// KEY POINTS
+// -------------------------------------------------
 
-    if (result.keyPoints && result.keyPoints.length > 0) {
-      addPageIfNeeded(20);
+if (result.keyPoints && result.keyPoints.length > 0) {
+  addPageIfNeeded(20);
 
-      pdf.setDrawColor(210, 218, 225);
-      pdf.setLineWidth(0.3);
+  pdf.setDrawColor(210, 218, 225);
+  pdf.setLineWidth(0.3);
 
-      pdf.line(margin, y, pageWidth - margin, y);
+  pdf.line(margin, y, pageWidth - margin, y);
 
-      y += 10;
+  y += 10;
+
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(14);
+  pdf.setTextColor(239, 181, 50);
+
+  pdf.text("Key Points", margin, y);
+
+  y += 8;
+
+  pdf.setFont("helvetica", "normal");
+  pdf.setFontSize(10.5);
+  pdf.setTextColor(35, 45, 55);
+
+  result.keyPoints.forEach((point) => {
+    const pointLines = pdf.splitTextToSize(
+      point,
+      contentWidth - 7
+    );
+
+    addPageIfNeeded(7);
+
+    pdf.setFont("helvetica", "bold");
+    pdf.text("•", margin, y);
+
+    pdf.setFont("helvetica", "normal");
+
+    pointLines.forEach((line) => {
+      addPageIfNeeded(6);
+
+      pdf.text(line, margin + 6, y);
+
+      y += 5.8;
+    });
+
+    y += 2;
+  });
+}
+
+// -------------------------------------------------
+// ENGLISH VERSION FOR NON-ENGLISH DOCUMENTS
+// -------------------------------------------------
+
+if (
+  result.detectedLanguage &&
+  result.detectedLanguage.toLowerCase() !== "english" &&
+  result.englishSummary
+) {
+  addPageIfNeeded(20);
+
+  // Divider
+  pdf.setDrawColor(210, 218, 225);
+  pdf.setLineWidth(0.3);
+
+  pdf.line(margin, y, pageWidth - margin, y);
+
+  y += 10;
+
+  // English Summary Heading
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(14);
+  pdf.setTextColor(239, 181, 50);
+
+  pdf.text("English Summary", margin, y);
+
+  y += 8;
+
+  // English Summary Text
+  pdf.setFont("helvetica", "normal");
+  pdf.setFontSize(10.5);
+  pdf.setTextColor(35, 45, 55);
+
+  const englishSummaryLines = pdf.splitTextToSize(
+    result.englishSummary,
+    contentWidth
+  );
+
+  for (const line of englishSummaryLines) {
+    addPageIfNeeded(6);
+
+    pdf.text(line, margin, y);
+
+    y += 5.8;
+  }
+
+  y += 7;
+
+  // English Key Points
+  if (
+    result.englishKeyPoints &&
+    result.englishKeyPoints.length > 0
+  ) {
+    addPageIfNeeded(20);
+
+    pdf.setDrawColor(210, 218, 225);
+    pdf.setLineWidth(0.3);
+
+    pdf.line(margin, y, pageWidth - margin, y);
+
+    y += 10;
+
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(14);
+    pdf.setTextColor(239, 181, 50);
+
+    pdf.text("English Key Points", margin, y);
+
+    y += 8;
+
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(10.5);
+    pdf.setTextColor(35, 45, 55);
+
+    result.englishKeyPoints.forEach((point) => {
+      const pointLines = pdf.splitTextToSize(
+        point,
+        contentWidth - 7
+      );
+
+      addPageIfNeeded(7);
 
       pdf.setFont("helvetica", "bold");
-      pdf.setFontSize(14);
-      pdf.setTextColor(239, 181, 50);
-
-      pdf.text("Key Points", margin, y);
-
-      y += 8;
+      pdf.text("•", margin, y);
 
       pdf.setFont("helvetica", "normal");
-      pdf.setFontSize(10.5);
-      pdf.setTextColor(35, 45, 55);
 
-      result.keyPoints.forEach((point) => {
-        const pointLines = pdf.splitTextToSize(point, contentWidth - 7);
+      pointLines.forEach((line) => {
+        addPageIfNeeded(6);
 
-        addPageIfNeeded(7);
+        pdf.text(line, margin + 6, y);
 
-        pdf.setFont("helvetica", "bold");
-        pdf.text("•", margin, y);
-
-        pdf.setFont("helvetica", "normal");
-
-        pointLines.forEach((line, index) => {
-          addPageIfNeeded(6);
-
-          pdf.text(line, margin + 6, y);
-
-          y += 5.8;
-        });
-
-        y += 2;
+        y += 5.8;
       });
 
-      //NEW for multi language
-      if (
-          result.detectedLanguage &&
-          result.detectedLanguage.toLowerCase() !== "english" &&
-          result.englishSummary
-        ) {
-        doc.addPage();
-
-        doc.setFontSize(16);
-        doc.setFont("helvetica", "bold");
-        doc.setTextColor(245, 183, 44);
-        doc.text("English Summary", margin, y);
-
-      y += 12;
-
-      doc.setFontSize(11);
-      doc.setFont("helvetica", "normal");
-      doc.setTextColor(20, 40, 65);
-
-      const englishSummaryLines = doc.splitTextToSize(
-        result.englishSummary,
-        pageWidth - margin * 2
-      );
-
-    doc.text(englishSummaryLines, margin, y);
-
-      y += englishSummaryLines.length * 6 + 12;
-
-      doc.setFontSize(16);
-      doc.setFont("helvetica", "bold");
-      doc.setTextColor(245, 183, 44);
-      doc.text("English Key Points", margin, y);
-
-      y += 10;
-
-      doc.setFontSize(11);
-      doc.setFont("helvetica", "normal");
-      doc.setTextColor(20, 40, 65);
-
-      result.englishKeyPoints.forEach((point) => {
-      const lines = doc.splitTextToSize(
-        `• ${point}`,
-        pageWidth - margin * 2
-      );
-
-      doc.text(lines, margin, y);
-      y += lines.length * 6 + 4;
+      y += 2;
     });
-    }
-  
+  }
+}
 
-    // -------------------------------------------------
-    // FOOTER ON EVERY PAGE
-    // -------------------------------------------------
-
+// -------------------------------------------------
+// FOOTER ON EVERY PAGE
+// -------------------------------------------------
     const totalPages = pdf.getNumberOfPages();
 
     for (let page = 1; page <= totalPages; page++) {
