@@ -259,7 +259,7 @@ export default function Home({ user, onLogin, onHistorySaved }) {
       y += lines.length * 6 + 4;
     });
     }
-  }
+  
 
     // -------------------------------------------------
     // FOOTER ON EVERY PAGE
