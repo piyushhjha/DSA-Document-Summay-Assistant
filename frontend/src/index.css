@@ -12,6 +12,11 @@ button{cursor:pointer}
 .brand b{color:#e8ad3e;font-weight:500}
 .brand-mark{color:#f1bd51;font-size:45px}
 nav {display: flex;align-items: center;gap: 26px;height: 100%; }
+
+.english-result-section h3 {
+  color: #f5b72c;
+}
+
 .nav-link {
   position: relative;
 
